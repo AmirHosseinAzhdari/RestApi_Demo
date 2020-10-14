@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using RestApi_Demo.Data;
+using RestApi_Demo.Models.Context;
 
 namespace RestApi_Demo
 {
@@ -25,6 +28,12 @@ namespace RestApi_Demo
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestApi_Demo", Version = "v1" });
             });
+
+            services.AddDbContext<CommanderContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //services.AddScoped<ICommanderRepo,MockCommanderRepo>();
+            services.AddScoped<ICommanderRepo,SqlCommanderRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

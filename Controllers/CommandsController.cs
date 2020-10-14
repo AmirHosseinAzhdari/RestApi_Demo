@@ -8,12 +8,17 @@ namespace RestApi_demo.Controllers
     [ApiController]
     public class CommandsController : ControllerBase
     {
-        private readonly MockCommanderRepo _repository = new MockCommanderRepo();
+        private readonly ICommanderRepo _commanderRepo;
+
+        public CommandsController(ICommanderRepo commanderRepo)
+        {
+            _commanderRepo = commanderRepo;
+        }
 
         //Get api/commands
         [HttpGet]
         public IActionResult GetAllCommands(){
-            var comandsList = _repository.GetAppCommands();
+            var comandsList = _commanderRepo.GetAllCommands();
 
             return Ok(comandsList);
         }
@@ -21,7 +26,7 @@ namespace RestApi_demo.Controllers
         //Get api/commands/5
         [HttpGet("{id}")]
          public IActionResult GetCommandById(int id){
-            var command = _repository.GetCommandById(id);
+            var command = _commanderRepo.GetCommandById(id);
 
             return Ok(command);
         }
