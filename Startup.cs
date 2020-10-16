@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using RestApi_Demo.Data;
 using RestApi_Demo.Models.Context;
+using Newtonsoft.Json.Serialization;
 
 namespace RestApi_Demo {
     public class Startup {
@@ -24,13 +25,15 @@ namespace RestApi_Demo {
                 options.UseSqlServer (Configuration.GetConnectionString ("DefaultConnection")));
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddControllers ();
+            services.AddControllers ()
+                 .AddNewtonsoftJson(option => {
+                     option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                 });
 
             services.AddSwaggerGen (c => {
                 c.SwaggerDoc ("v1", new OpenApiInfo { Title = "RestApi_Demo", Version = "v1" });
             });
 
-            //services.AddScoped<ICommanderRepo,MockCommanderRepo>();
             services.AddScoped<ICommanderRepo, SqlCommanderRepo> ();
         }
 
